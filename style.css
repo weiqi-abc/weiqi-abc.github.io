@@ -1,0 +1,140 @@
+/* style.css - 终极修复版 */
+:root {
+    --bg-color: #f7f8fa;
+    --board-color: #e6b87d; /* 棋盘黄 */
+    --primary-color: #2c3e50;
+    --text-color: #333;
+    --success-color: #27ae60;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* 顶部导航 */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 游戏主区域 */
+.game-area {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.question-text {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* --- 棋盘容器修复核心 --- */
+#board-container {
+    /* 1. 限制宽度，防止无限撑大 */
+    width: 100%; 
+    max-width: 380px; 
+    
+    /* 2. 强制正方形 */
+    aspect-ratio: 1 / 1; 
+    
+    /* 3. 居中 */
+    margin: 0 auto;
+    position: relative;
+    
+    /* 4. 如果浏览器太老不支持 aspect-ratio，给个默认高度 */
+    @supports not (aspect-ratio: 1 / 1) {
+        height: 350px;
+    }
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+/* --- 修复结束 --- */
+
+/* 输入区 */
+.input-area {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.hidden { display: none !important; }
+
+/* 按钮与输入框 */
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+}
+button.secondary {
+    background-color: #eee;
+    color: #333;
+    padding: 6px 12px;
+    font-size: 0.9em;
+}
+
+input[type="number"] {
+    padding: 10px;
+    font-size: 1.2em;
+    width: 100px;
+    text-align: center;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 弹窗 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    max-width: 300px;
+}

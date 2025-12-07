@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>闯关中...</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .btn-bool {
+            font-size: 1.2em;
+            padding: 15px 35px;
+            margin: 0 10px;
+            min-width: 100px;
+            font-weight: bold;
+        }
+        .btn-yes { background-color: #27ae60; }
+        .btn-no { background-color: #c0392b; }
+        .hint-text { font-size: 0.9em; color: #666; margin-bottom: 15px; display: block; }
+        
+        /* 第15课：多项填空样式 */
+        .multi-input-row { margin-bottom: 10px; display: flex; align-items: center; justify-content: center; }
+        .multi-input-row label { width: 60px; text-align: right; margin-right: 10px; font-weight: bold; }
+        .multi-input-row input { width: 60px !important; }
+
+        /* 第25课：比分填空样式 */
+        .score-row { margin-bottom: 15px; display: flex; justify-content: center; gap: 20px; }
+        .score-item { text-align: center; }
+        .score-item label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .score-item input { width: 80px !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="game-header">
+        <button class="secondary" onclick="location.href='index.html'">&lt; 退出</button>
+        <span id="lesson-title">加载中...</span>
+        <span id="progress-indicator">1 / 3</span>
+    </div>
+
+    <div class="game-area">
+        <div id="question-text" class="question-text"></div>
+
+        <div id="board-container">
+            <canvas id="go-board"></canvas>
+        </div>
+
+        <!-- 1. 单数字输入 -->
+        <div class="input-area hidden" id="input-section">
+            <input type="number" id="answer-input" placeholder="输入数字" inputmode="numeric">
+            <button class="btn-primary" onclick="submitInput()">提交</button>
+        </div>
+        
+        <!-- 2. 是非判断 -->
+        <div class="input-area hidden" id="bool-section">
+            <button class="btn-primary btn-bool btn-yes" onclick="submitBool(true)">是</button>
+            <button class="btn-primary btn-bool btn-no" onclick="submitBool(false)">否</button>
+        </div>
+
+        <!-- 3. 选择确认 (选子/选气) -->
+        <div class="input-area hidden" id="select-section">
+            <span id="select-hint" class="hint-text"></span>
+            <button class="btn-primary" onclick="submitSelection()">确认标记</button>
+        </div>
+
+        <!-- 4. 多项填空 -->
+        <div class="input-area hidden" id="multi-input-section">
+            <div class="multi-input-row"><label>角上:</label><input type="number" id="input-corner">个</div>
+            <div class="multi-input-row"><label>边上:</label><input type="number" id="input-side">个</div>
+            <div class="multi-input-row"><label>中腹:</label><input type="number" id="input-center">个</div>
+            <button class="btn-primary" onclick="submitMultiInput()">提交答案</button>
+        </div>
+
+        <!-- 5. 胜负判断 -->
+        <div class="input-area hidden" id="score-section">
+            <div class="score-row">
+                <div class="score-item"><label>⚫ 黑棋</label><input type="number" id="score-black" placeholder="目数"></div>
+                <div class="score-item"><label>⚪ 白棋</label><input type="number" id="score-white" placeholder="目数"></div>
+            </div>
+            <p style="font-size:0.8em; color:#888; margin-bottom:10px;">(输入双方占领的交叉点数量)</p>
+            <button class="btn-primary" onclick="submitScore()">提交判决</button>
+        </div>
+
+        <!-- 6. 下一题 (默认隐藏，只有Board类题目做完后才显示) -->
+        <div class="input-area hidden" id="next-section">
+            <button class="btn-primary" onclick="nextProblem()">下一题 &gt;</button>
+        </div>
+    </div>
+</div>
+
+<div id="result-modal" class="modal">
+    <div class="modal-content">
+        <h2 id="modal-title"></h2>
+        <p id="modal-msg"></p>
+        <button class="btn-primary" onclick="closeModal()">确定</button>
+    </div>
+</div>
+
+<script src="data.js"></script>
+<script src="problems.js"></script>
+<script src="game.js"></script>
+
+<script>
+    // --- 初始化 ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const lessonId = parseInt(urlParams.get('lesson')) || 1;
+    let problems = [];
+
+    // 随机选题逻辑
+    if (ProblemData[lessonId]) {
+        const allProblems = JSON.parse(JSON.stringify(ProblemData[lessonId]));
+        for (let i = allProblems.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allProblems[i], allProblems[j]] = [allProblems[j], allProblems[i]];
+        }
+        problems = allProblems.slice(0, 3);
+    } else {
+        alert("本课题目即将上线！");
+        window.location.href = 'index.html';
+    }
+
+    let currentIdx = 0;
+    let correctCount = 0;
+    let board = null;
+
+    document.getElementById('lesson-title').innerText = `第${lessonId}课`;
+
+    setTimeout(() => {
+        board = new GoBoard('go-board', 9);
+        renderProblem();
+    }, 100);
+
+    // --- 渲染逻辑 ---
+    function renderProblem() {
+        const p = problems[currentIdx];
+        document.getElementById('progress-indicator').innerText = `${currentIdx + 1} / ${problems.length}`;
+        document.getElementById('question-text').innerText = p.desc;
+        
+        // 隐藏所有交互区
+        ['input-section', 'bool-section', 'select-section', 'multi-input-section', 'score-section', 'next-section'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+
+        // SGF 解析
+        if (p.sgf) {
+            const parsed = board.parseSGF(p.sgf);
+            p.initial = parsed.initial;
+            if (!p.answer && parsed.answer) p.answer = parsed.answer;
+            if (!p.size) p.size = parsed.size || 9; 
+        }
+
+        board.setSize(p.size || 9);
+        board.setup(p.initial, p.markers || []);
+
+        // 模式配置
+        if (p.type === 'board') {
+            board.isLocked = false;
+            board.setSelectionMode(false);
+            board.currentColor = 1;
+            board.onMove = function(move) {
+                if (move.x === p.answer.x && move.y === p.answer.y) {
+                    correctCount++;
+                    // 答对后，暂不重置棋盘，让用户看一眼
+                    showModal("回答正确! 🎉", p.successMsg || "好棋！", true);
+                } else {
+                    showModal("回答错误 😅", "这手棋好像不对哦。", false);
+                    setTimeout(() => board.setup(p.initial, p.markers||[]), 1000);
+                }
+            };
+        } 
+        else if (p.type === 'bool') {
+            document.getElementById('bool-section').classList.remove('hidden');
+            board.isLocked = true;
+            board.setSelectionMode(false);
+        }
+        else if (p.type === 'input') {
+            document.getElementById('input-section').classList.remove('hidden');
+            document.getElementById('answer-input').value = '';
+            board.isLocked = true;
+        }
+        else if (p.type === 'select' || p.type === 'select_point') {
+            document.getElementById('select-section').classList.remove('hidden');
+            let hint = p.type === 'select' ? "(点击棋子)" : "(点击空点)";
+            document.getElementById('select-hint').innerText = hint;
+            board.setSelectionMode(true, p.type === 'select' ? 'stone' : 'point');
+        }
+        else if (p.type === 'multi_input') {
+            document.getElementById('multi-input-section').classList.remove('hidden');
+            document.getElementById('input-corner').value = '';
+            document.getElementById('input-side').value = '';
+            document.getElementById('input-center').value = '';
+            board.isLocked = true;
+        }
+        else if (p.type === 'score_count') {
+            document.getElementById('score-section').classList.remove('hidden');
+            document.getElementById('score-black').value = '';
+            document.getElementById('score-white').value = '';
+            board.isLocked = true;
+        }
+    }
+
+    // --- 提交函数 ---
+    function submitInput() {
+        const val = parseInt(document.getElementById('answer-input').value);
+        checkResult(val === problems[currentIdx].answer);
+    }
+    function submitBool(val) {
+        checkResult(val === problems[currentIdx].answer);
+    }
+    function submitSelection() {
+        const p = problems[currentIdx];
+        const userSet = board.selectedPoints;
+        const ansArr = p.answer;
+        let isCorrect = (userSet.size === ansArr.length);
+        if (isCorrect) {
+            for (let point of ansArr) {
+                if (!userSet.has(`${point.x},${point.y}`)) { isCorrect = false; break; }
+            }
+        }
+        checkResult(isCorrect);
+    }
+    function submitMultiInput() {
+        const p = problems[currentIdx];
+        const v1 = parseInt(document.getElementById('input-corner').value);
+        const v2 = parseInt(document.getElementById('input-side').value);
+        const v3 = parseInt(document.getElementById('input-center').value);
+        checkResult(v1===p.answer[0] && v2===p.answer[1] && v3===p.answer[2]);
+    }
+    function submitScore() {
+        const p = problems[currentIdx];
+        const b = parseInt(document.getElementById('score-black').value);
+        const w = parseInt(document.getElementById('score-white').value);
+        checkResult(b===p.answer.black && w===p.answer.white);
+    }
+
+    function checkResult(isCorrect) {
+        const p = problems[currentIdx];
+        if (isCorrect) {
+            correctCount++;
+            showModal("回答正确! 🎉", p.successMsg || "很棒！", true);
+        } else {
+            let msg = "请再思考一下。";
+            if (p.type === 'bool') msg = `正确答案是：${p.answer ? '是' : '否'}`;
+            showModal("回答错误 😅", msg, true);
+        }
+    }
+
+    // --- 弹窗与跳转逻辑 (核心修改) ---
+    function showModal(title, msg, isNextStep) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-msg').innerText = msg;
+        document.getElementById('result-modal').style.display = 'flex';
+        window.nextAction = isNextStep ? 'next' : 'retry';
+    }
+
+    function closeModal() {
+        document.getElementById('result-modal').style.display = 'none';
+        
+        if (window.nextAction === 'next') {
+            const p = problems[currentIdx];
+            
+            // 定义哪些类型需要“手动点击下一题” (以便查看棋盘状态)
+            // board: 落子后棋形变化，需要看
+            // multi_input / score_count: 复杂题，可能想回顾
+            const manualAdvanceTypes = ['board', 'multi_input', 'score_count'];
+
+            if (manualAdvanceTypes.includes(p.type)) {
+                // 1. 手动模式：停留在当前页，显示下一题按钮
+                board.isLocked = true; // 锁住棋盘防止乱点
+                
+                // 隐藏所有交互框
+                ['input-section','bool-section','select-section','multi-input-section','score-section'].forEach(id => {
+                    document.getElementById(id).classList.add('hidden');
+                });
+                
+                // 显示下一题按钮
+                document.getElementById('next-section').classList.remove('hidden');
+                
+            } else {
+                // 2. 自动模式：直接跳下一题 (Bool, Select, Input)
+                nextProblem();
+            }
+        }
+    }
+
+    function nextProblem() {
+        currentIdx++;
+        if (currentIdx < problems.length) {
+            renderProblem();
+        } else {
+            finishLesson();
+        }
+    }
+
+    function finishLesson() {
+        const score = Math.round((correctCount / problems.length) * 100);
+        DataManager.saveScore(lessonId, score);
+        
+        let title = score >= 60 ? "闯关成功！✅" : "继续加油！💪";
+        if (score === 100) title = "完美通关！🏆";
+        
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-msg').innerText = `本轮得分：${score}`;
+        const btn = document.querySelector('#result-modal button');
+        btn.innerText = "返回列表";
+        btn.onclick = () => window.location.href = 'index.html';
+        
+        document.getElementById('result-modal').style.display = 'flex';
+    }
+</script>
+
+</body>
+</html>
