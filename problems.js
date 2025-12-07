@@ -109,7 +109,7 @@ const ProblemData = {
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[bi][ci]AW[ah][bh][dh]AP[MultiGo:4.4.4]SZ[9]AB[ai]MULTIGOGM[1])", markers: [{x:0,y:8},{x:1,y:8},{x:2,y:8}], answer: false },
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[eh][eg][ef]AW[dh][ei][fi][fh][fg]AP[MultiGo:4.4.4]SZ[9]AB[di]MULTIGOGM[1])", markers: [{x:3,y:8}], answer: false },
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[dh][cd][ce][cf]AW[bg][cg][eg][eh][df][de]AP[MultiGo:4.4.4]SZ[9]AB[dg]MULTIGOGM[1])", markers: [{x:3,y:6},{x:3,y:7}], answer: false },
-        { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[cg][df][ef][eg]AW[bh][ci][dg][dh][cf][ce]AP[MultiGo:4.4.4]SZ[9]AB[ch]MULTIGOGM[1])", markers: [{x:2,y:6},{x:2,y:7}], answer: true }
+        { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[cg][df][ef][eg]AW[bh][ci][dg][dh][cf][ce]AP[MultiGo:4.4.4]SZ[9]AB[ch]MULTIGOGM[1])", markers: [{x:2,y:6},{x:2,y:7}], answer: false }
     ],
 
     // ==========================================
@@ -307,3 +307,4 @@ const ProblemData = {
         { type: 'score_count', size: 9, title: "形势判断", desc: "数一数黑白各占了多少目（交叉点）？", sgf: "(;CA[utf-8]AB[eg][eh][ei][fe][fd][fc][fb][fa][gf]AW[ea][eb][ec][ed][ee][df][dg][dh][di][ce]AP[MultiGo:4.4.4]SZ[9]AB[ef]MULTIGOGM[1])", answer: {black: 40, white: 41} }
     ]
 };
+
