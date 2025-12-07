@@ -104,7 +104,7 @@ const ProblemData = {
     // Lesson 8: 能否逃脱 (判断 / 是非题)
     // ==========================================
     8: [
-        { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[fe][gd][gc][he][gg]AW[ge][fd][fc][fb][gb]MA[ge]C[被标记的子，不能逃脱了。]AP[MultiGo:4.4.4]SZ[9]AB[ff]MULTIGOGM[1];W[gf];B[hf])", markers: [{x:6,y:4}], answer: false },
+        { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的白子能逃跑吗？", sgf: "(;CA[utf-8]AB[fb][fc][fd][ge]AW[gd][gc][he][fe][ff[gg]C[被标记的子，不能逃脱了。]AP[MultiGo:4.4.4]SZ[9]AB[gb]MULTIGOGM[1])", markers: [{x:6,y:4}], answer: false },
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AW[di][fi]MA[ei]AP[MultiGo:4.4.4]SZ[9]AB[ei]MULTIGOGM[1];B[eh]C[可以逃跑])", markers: [{x:4,y:8}], answer: true },
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[bi][ci]AW[ah][bh][dh]AP[MultiGo:4.4.4]SZ[9]AB[ai]MULTIGOGM[1])", markers: [{x:0,y:8},{x:1,y:8},{x:2,y:8}], answer: false },
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[eh][eg][ef]AW[dh][ei][fi][fh][fg]AP[MultiGo:4.4.4]SZ[9]AB[di]MULTIGOGM[1])", markers: [{x:3,y:8}], answer: false },
@@ -307,4 +307,3 @@ const ProblemData = {
         { type: 'score_count', size: 9, title: "形势判断", desc: "数一数黑白各占了多少目（交叉点）？", sgf: "(;CA[utf-8]AB[eg][eh][ei][fe][fd][fc][fb][fa][gf]AW[ea][eb][ec][ed][ee][df][dg][dh][di][ce]AP[MultiGo:4.4.4]SZ[9]AB[ef]MULTIGOGM[1])", answer: {black: 40, white: 41} }
     ]
 };
-
