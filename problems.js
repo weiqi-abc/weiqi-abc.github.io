@@ -106,8 +106,8 @@ const ProblemData = {
     8: [
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[fe][gd][gc][he][gg]AW[ge][fd][fc][fb][gb]MA[ge]C[被标记的子，不能逃脱了。]AP[MultiGo:4.4.4]SZ[9]AB[ff]MULTIGOGM[1];W[gf];B[hf])", markers: [{x:6,y:4}], answer: false },
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AW[di][fi]MA[ei]AP[MultiGo:4.4.4]SZ[9]AB[ei]MULTIGOGM[1];B[eh]C[可以逃跑])", markers: [{x:4,y:8}], answer: true },
-        { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[bi][ci]AW[ah][bh][dh]AP[MultiGo:4.4.4]SZ[9]AB[ai]MULTIGOGM[1])", markers: [{x:0,y:7},{x:1,y:7},{x:2,y:7}], answer: false },
-        { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[eh][eg][ef]AW[dh][ei][fi][fh][fg]AP[MultiGo:4.4.4]SZ[9]AB[di]MULTIGOGM[1])", markers: [{x:3,y:7}], answer: false },
+        { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[bi][ci]AW[ah][bh][dh]AP[MultiGo:4.4.4]SZ[9]AB[ai]MULTIGOGM[1])", markers: [{x:0,y:8},{x:1,y:8},{x:2,y:8}], answer: false },
+        { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[eh][eg][ef]AW[dh][ei][fi][fh][fg]AP[MultiGo:4.4.4]SZ[9]AB[di]MULTIGOGM[1])", markers: [{x:3,y:8}], answer: false },
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[dh][cd][ce][cf]AW[bg][cg][eg][eh][df][de]AP[MultiGo:4.4.4]SZ[9]AB[dg]MULTIGOGM[1])", markers: [{x:3,y:6},{x:3,y:7}], answer: false },
         { type: 'bool', size: 9, title: "能否逃脱", desc: "标记的黑子能逃跑吗？", sgf: "(;CA[utf-8]AB[cg][df][ef][eg]AW[bh][ci][dg][dh][cf][ce]AP[MultiGo:4.4.4]SZ[9]AB[ch]MULTIGOGM[1])", markers: [{x:2,y:6},{x:2,y:7}], answer: true }
     ],
